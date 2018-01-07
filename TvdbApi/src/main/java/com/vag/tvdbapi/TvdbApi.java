@@ -36,9 +36,9 @@ public class TvdbApi {
     private final RequestQueue mRequestQueue;
 
     /**
-     * Create a new TvdbApi instance. This does not need to be a singleton object
+     * Create a new TvdbApi instance.
      *
-     * @param apiKey       Your TVDB api key
+     * @param apiKey       YTVDB api key
      * @param language     The two letter language code to use for queries, if null defaults to "en"
      * @param requestQueue The {@link RequestQueue} for api requests
      */
@@ -196,6 +196,50 @@ public class TvdbApi {
                 EpisodeParser>(new EpisodeParser(mLanguage), requestUrl, listener, errorListener);
 
         mRequestQueue.add(episodeRequest);
+    }
+	
+	/**
+     * Search the TVDB for a {@link Series} based on the series name
+     *
+     * @param seriesName    The series to search for
+     * @param listener      {@link Response.Listener} for receiving the result
+     * @param errorListener {@link Response.ErrorListener} for receiving any errors
+     */
+    public void searchSeries(String seriesName, Response.Listener<Collection<Series>> listener,
+                             Response.ErrorListener errorListener) {
+        String query;
+        try {
+            query = URLEncoder.encode(seriesName, CHAR_ENCODING);
+        } catch (UnsupportedEncodingException e) {
+            Log.wtf(TAG, "How the hell is " + CHAR_ENCODING + " not supported? Dropping request");
+            return;
+        }
+
+        String requestUrl = SERIES_SEARCH + query + "&language=" + mLanguage;
+        XmlObjectListRequest<Series, SeriesParser> seriesRequest =
+                new XmlObjectListRequest<Series, SeriesParser>(new SeriesParser(),
+                                                               requestUrl, listener,
+                                                               errorListener);
+
+        mRequestQueue.add(seriesRequest);
+    }
+
+    /**
+     * Get a {@link Series} from the IMDB ID
+     *
+     * @param imdbId        The IMDB ID
+     * @param listener      {@link Response.Listener} for receiving the result
+     * @param errorListener {@link Response.ErrorListener} for receiving any errors
+     */
+    public void getSeriesFromImdbId(String imdbId, Response.Listener<Series> listener,
+                                    Response.ErrorListener errorListener) {
+        String requestUrl = IMDB_SERIES_SEARCH + imdbId;
+
+        XmlObjectRequest<Series, SeriesParser> seriesRequest =
+                new XmlObjectRequest<Series, SeriesParser>(new SeriesParser(), requestUrl, listener,
+                                                           errorListener);
+
+        mRequestQueue.add(seriesRequest);
     }
 
     private String getSeriesRequestUrl(int seriesId) {
