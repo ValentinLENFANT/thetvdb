@@ -16,6 +16,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+/**
+ * TVDB Series metadata
+ * *Warning* Objects not present in the XML will be null, numbers not present will be NOT_PRESENT
+ *
+ * @see <a href="http://thetvdb.com/wiki/index.php/API:Base_Series_Record.xml">TVDB API Base Series Record</a>
+ */
 public class Series extends TvdbItem implements Parcelable {
 
     /**
@@ -24,10 +30,17 @@ public class Series extends TvdbItem implements Parcelable {
     public final int id;
     public final String[] actors;
     /**
-     * From monday to sunday
+     * Can be "Monday" through "Sunday"
      */
     public final String airsDayOfWeek;
+    /**
+     * I don't know what timezone TVDB uses but it will look something like this: "8:00 PM"
+     */
     public final String airsTime;
+    /**
+     * Your standard content rating string
+     * Example: "TV-PG"
+     */
     public final String contentRating;
     public final Date firstAired;
     public final String[] genres;
@@ -53,8 +66,14 @@ public class Series extends TvdbItem implements Parcelable {
     public final long lastUpdated;
     public final String poster;
     public final String zap2itId;
+
     private static final String TAG = "Series";
     private static final boolean D = false;
+
+    /**
+     * Infuriatingly the api specs define the TVDB Series ID as 'id' in some places and 'seriesid'
+     * in others.
+     */
     private static final String TAG_ID = "id";
     private static final String TAG_ID2 = "seriesid";
     private static final String TAG_ACTORS = "Actors";
@@ -64,6 +83,7 @@ public class Series extends TvdbItem implements Parcelable {
     private static final String TAG_FIRST_AIRED = "FirstAired";
     private static final String TAG_GENRES = "Genre";
     private static final String TAG_IMDB_ID = "IMDB_ID";
+    /** Language is also defined differently in different places*/
     private static final String TAG_LANGUAGE = "Language";
     private static final String TAG_LANGUAGE2 = "language";
     private static final String TAG_NETWORK = "Network";
@@ -72,6 +92,7 @@ public class Series extends TvdbItem implements Parcelable {
     private static final String TAG_RATING = "Rating";
     private static final String TAG_RATING_COUNT = "RatingCount";
     private static final String TAG_RUNTIME = "Runtime";
+    /** What's even more ridiculous is there's a 'SeriesID' tag which is actually the TV.com id*/
     private static final String TAG_TV_COM_ID = "SeriesID";
     private static final String TAG_NAME = "SeriesName";
     private static final String TAG_STATUS = "Status";
@@ -84,6 +105,75 @@ public class Series extends TvdbItem implements Parcelable {
     private static final String TAG_ZAP2IT_ID = "zap2it_id";
     private static final String DELIMITER = "|";
     private static final String DATE_FORMAT = "yyyy-MM-dd";
+
+    public static Series fromXml(XmlPullParser parser)
+            throws XmlPullParserException, IOException, XmlException {
+        Builder builder = new Builder();
+        while (parser.nextTag() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) continue;
+
+            String tag = parser.getName();
+            if (tag.equals(TAG_ID)) {
+                builder.setId(XmlUtil.readInt(parser, TAG_ID, NOT_PRESENT));
+            } else if (tag.equals(TAG_ID2)) {
+                builder.setId(XmlUtil.readInt(parser, TAG_ID2, NOT_PRESENT));
+            } else if (tag.equals(TAG_ACTORS)) {
+                builder.setActors(XmlUtil.readStringArray(parser, TAG_ACTORS, DELIMITER));
+            } else if (tag.equals(TAG_AIRS_DAY_OF_WEEK)) {
+                builder.setAirsDayOfWeek(XmlUtil.readText(parser, TAG_AIRS_DAY_OF_WEEK));
+            } else if (tag.equals(TAG_AIRS_TIME)) {
+                builder.setAirsTime(XmlUtil.readText(parser, TAG_AIRS_TIME));
+            } else if (tag.equals(TAG_CONTENT_RATING)) {
+                builder.setContentRating(XmlUtil.readText(parser, TAG_CONTENT_RATING));
+            } else if (tag.equals(TAG_FIRST_AIRED)) {
+                builder.setFirstAired(XmlUtil.readDate(parser, TAG_FIRST_AIRED, DATE_FORMAT));
+            } else if (tag.equals(TAG_GENRES)) {
+                builder.setGenres(XmlUtil.readStringArray(parser, TAG_GENRES, DELIMITER));
+            } else if (tag.equals(TAG_IMDB_ID)) {
+                builder.setImdbId(XmlUtil.readText(parser, TAG_IMDB_ID));
+            } else if (tag.equals(TAG_LANGUAGE)) {
+                builder.setLanguage(XmlUtil.readText(parser, TAG_LANGUAGE));
+            } else if (tag.equals(TAG_LANGUAGE2)) {
+                builder.setLanguage(XmlUtil.readText(parser, TAG_LANGUAGE2));
+            } else if (tag.equals(TAG_NETWORK)) {
+                builder.setNetwork(XmlUtil.readText(parser, TAG_NETWORK));
+            } else if (tag.equals(TAG_NETWORK_ID)) {
+                builder.setNetworkId(XmlUtil.readInt(parser, TAG_NETWORK_ID, NOT_PRESENT));
+            } else if (tag.equals(TAG_OVERVIEW)) {
+                builder.setOverview(XmlUtil.readText(parser, TAG_OVERVIEW));
+            } else if (tag.equals(TAG_RATING)) {
+                builder.setRating(XmlUtil.readFloat(parser, TAG_RATING, NOT_PRESENT));
+            } else if (tag.equals(TAG_RATING_COUNT)) {
+                builder.setRatingCount(XmlUtil.readInt(parser, TAG_RATING_COUNT, NOT_PRESENT));
+            } else if (tag.equals(TAG_RUNTIME)) {
+                builder.setRuntime(XmlUtil.readInt(parser, TAG_RUNTIME, NOT_PRESENT));
+            } else if (tag.equals(TAG_TV_COM_ID)) {
+                builder.setTvComId(XmlUtil.readInt(parser, TAG_TV_COM_ID, NOT_PRESENT));
+            } else if (tag.equals(TAG_NAME)) {
+                builder.setName(XmlUtil.readText(parser, TAG_NAME));
+            } else if (tag.equals(TAG_STATUS)) {
+                builder.setStatus(XmlUtil.readText(parser, TAG_STATUS));
+            } else if (tag.equals(TAG_ADDED)) {
+                builder.setAdded(XmlUtil.readText(parser, TAG_ADDED));
+            } else if (tag.equals(TAG_ADDED_BY)) {
+                builder.setAddedBy(XmlUtil.readText(parser, TAG_ADDED_BY));
+            } else if (tag.equals(TAG_BANNER)) {
+                builder.setBanner(XmlUtil.readText(parser, TAG_BANNER));
+            } else if (tag.equals(TAG_FANART)) {
+                builder.setFanart(XmlUtil.readText(parser, TAG_FANART));
+            } else if (tag.equals(TAG_LAST_UPDATED)) {
+                builder.setLastUpdated(XmlUtil.readLong(parser, TAG_LAST_UPDATED, NOT_PRESENT));
+            } else if (tag.equals((TAG_POSTER))) {
+                builder.setPoster(XmlUtil.readText(parser, TAG_POSTER));
+            } else if (tag.equals(TAG_ZAP2IT_ID)) {
+                builder.setZap2itId(XmlUtil.readText(parser, TAG_ZAP2IT_ID));
+            } else {
+                if (D) Log.d(TAG, "Skipping tag: " + tag);
+                XmlUtil.skip(parser);
+            }
+        }
+        return builder.build();
+    }
 
     private Series(int id, String[] actors, String airsDayOfWeek, String airsTime,
                    String contentRating, Date firstAired, String[] genres, String imdbId,
@@ -116,6 +206,93 @@ public class Series extends TvdbItem implements Parcelable {
         this.lastUpdated = lastUpdated;
         this.poster = poster;
         this.zap2itId = zap2itId;
+    }
+
+    protected Series(Parcel in) {
+        id = in.readInt();
+        actors = in.createStringArray();
+        airsDayOfWeek = in.readString();
+        airsTime = in.readString();
+        contentRating = in.readString();
+        long tmpFirstAired = in.readLong();
+        firstAired = tmpFirstAired != NOT_PRESENT ? new Date(tmpFirstAired) : null;
+        genres = in.createStringArray();
+        imdbId = in.readString();
+        language = in.readString();
+        network = in.readString();
+        networkId = in.readInt();
+        overview = in.readString();
+        rating = in.readFloat();
+        ratingCount = in.readInt();
+        runtime = in.readInt();
+        tvComId = in.readInt();
+        name = in.readString();
+        status = in.readString();
+        added = in.readString();
+        addedBy = in.readString();
+        banner = in.readString();
+        fanart = in.readString();
+        lastUpdated = in.readLong();
+        poster = in.readString();
+        zap2itId = in.readString();
+    }
+
+
+    public String getImageUrl() {
+        return banner;
+    }
+
+
+    public String getTitleText() {
+        return name;
+    }
+
+
+    public String getDescText() {
+        return overview;
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Series> CREATOR = new Parcelable.Creator<Series>() {
+        public Series createFromParcel(Parcel in) {
+            return new Series(in);
+        }
+
+        public Series[] newArray(int size) {
+            return new Series[size];
+        }
+    };
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(id);
+        out.writeStringArray(actors);
+        out.writeString(airsDayOfWeek);
+        out.writeString(airsTime);
+        out.writeString(contentRating);
+        out.writeLong(firstAired != null ? firstAired.getTime() : -NOT_PRESENT);
+        out.writeStringArray(genres);
+        out.writeString(imdbId);
+        out.writeString(language);
+        out.writeString(network);
+        out.writeInt(networkId);
+        out.writeString(overview);
+        out.writeFloat(rating);
+        out.writeInt(ratingCount);
+        out.writeInt(runtime);
+        out.writeInt(tvComId);
+        out.writeString(name);
+        out.writeString(status);
+        out.writeString(added);
+        out.writeString(addedBy);
+        out.writeString(banner);
+        out.writeString(fanart);
+        out.writeLong(lastUpdated);
+        out.writeString(poster);
+        out.writeString(zap2itId);
     }
 
     public static class Builder {
