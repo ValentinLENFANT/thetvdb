@@ -34,7 +34,7 @@ public class TvdbItemAdapter<T extends TvdbItem> extends BaseAdapter {
                            int titleViewResourceId) {
         init(context, imageLoader, resource, titleViewResourceId, NO_RESOURCE, NO_RESOURCE);
     }
-    
+
 
     public TvdbItemAdapter(Context context, ImageLoader imageLoader, int resource,
                            int titleViewResourceId, int networkImageViewResourceId) {
