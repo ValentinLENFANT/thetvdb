@@ -20,7 +20,7 @@ import java.util.Collection;
 
 public class SeriesListActivity extends ListActivity {
     private static final String TAG = "SeriesListActivity";
-    private static final String SEARCH_STRING = "the";
+    private static final String SEARCH_STRING = "war";
 
     private TvdbItemAdapter<Series> mSeriesAdapter;
 
@@ -61,7 +61,7 @@ public class SeriesListActivity extends ListActivity {
     private Response.ErrorListener mErrorListener = new Response.ErrorListener() {
 
         public void onErrorResponse(VolleyError volleyError) {
-            Toast.makeText(SeriesListActivity.this, "Oh noes! Something has gone awry.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SeriesListActivity.this, "Oh noes! Something has gone away for SeriesListActivity.", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Error fetching series: ", volleyError);
         }
     };

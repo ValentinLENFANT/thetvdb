@@ -15,85 +15,25 @@ import java.io.IOException;
 
 /**
  * TVDB Banner metadata
- * *Warning* Objects not present in the XML will be null, numbers not present will be -1
- *
- * @see <a href="http://thetvdb.com/wiki/index.php/API:banners.xml">TVDB API banners.xml</a>
  */
 public class Banner implements Parcelable {
-    /**
-     * TVDB Banner ID, only useful for uniquely identifying a banner
-     */
-    public final int id;
-    /**
-     * The path for the banner
-     */
-    public final String bannerPath;
-    /**
-     * The path for the thumbnail
-     * Only exists if type is fanart
-     */
-    public final String thumbnailPath;
-    /**
-     * The path for the thumbnail
-     * Only exists if type is fanart
-     */
-    public final String vignettePath;
-    /**
-     * Banner rating with four decimal place precision
-     */
-    public final float rating;
-    /**
-     * Number of times the banner has been rated
-     */
-    public final int ratingCount;
-    /**
-     * Indicates if the seriesname is included in the image or not
-     */
-    public final boolean hasSeriesName;
-    /**
-     * {@link Color} int that represents the light accent color the artist picked that goes well
-     * with the image. Only available when type is fanart
-     */
-    public final int lightAccentColor;
-    /**
-     * {@link Color} int that represents the dark accent color the artist picked that goes well
-     * with the image. Only available when type is fanart
-     */
-    public final int darkAccentColor;
-    /**
-     * {@link Color} int that represents the neutral midtone color the artist picked that goes well
-     * with the image. Only available when type is fanart
-     */
-    public final int neutralMidtoneColor;
-    /**
-     * Banner type
-     * Can be poster, fanart, series, or season
-     */
-    public final String type;
-    /**
-     * For series banners it can be <b>text</b>, <b>graphical</b>, or <b>blank</b>.
-     * For season banners it can be <b>season</b> or <b>seasonwide</b>
-     * For fanart in can be <b>1280x720</b> or <b>1920x1080</b>
-     * For poster it will always be <b>680x1000</b>
-     * <p/>
-     * Blank Banners will leave the title and show logo off the banner.
-     * Text Banners will show the series name as pain text in Arial font.
-     * Graphical banners will show the series name in the shows official fot or will display the actual logo for the show.
-     * Season banners are the standard DVD cover format while wide season banners will be the same dimensions as the series banners
-     */
-    public final String type2;
-    /**
-     * Some banners list the series name in a foreign language. This is the abbreviation of that language
-     */
-    public final String language;
-    /**
-     * If the banner is for a specific season, this will be the season number. Otherwise it will be -1
-     */
-    public final int seasonNumber;
 
+    public final int id;
+    public final String bannerPath;
+    public final String thumbnailPath;
+    public final String vignettePath;
+    public final float rating;
+    public final int ratingCount;
+    public final boolean hasSeriesName;
+    public final int lightAccentColor;
+    public final int darkAccentColor;
+    public final int neutralMidtoneColor;
+    public final String type;
+    public final String type2;
+    public final String language;
+    public final int seasonNumber;
     private static final String TAG = "Banner";
     private static final boolean D = false;
-
     private static final String TAG_ID = "id";
     private static final String TAG_BANNER_PATH = "BannerPath";
     private static final String TAG_THUMBNAIL_PATH = "ThumbnailPath";
@@ -106,12 +46,47 @@ public class Banner implements Parcelable {
     private static final String TAG_RATING_COUNT = "RatingCount";
     private static final String TAG_HAS_SERIES_NAME = "SeriesName";
     private static final String TAG_SEASON = "Season";
-
     private static final String DELIMITER = "|";
-
     private static final int LIGHT_ACCENT_COLOR_POS = 0;
     private static final int DARK_ACCENT_COLOR_POS = 1;
     private static final int NEUTRAL_MIDTONE_COLOR_POS = 2;
+
+    protected Banner(int id, String bannerPath, String thumbnailPath, String vignettePath,
+                     float rating, int ratingCount, boolean hasSeriesName, int lightAccentColor,
+                     int darkAccentColor, int neutralMidtoneColor, String type,
+                     String type2, String language, int seasonNumber) {
+        this.id = id;
+        this.bannerPath = bannerPath;
+        this.thumbnailPath = thumbnailPath;
+        this.vignettePath = vignettePath;
+        this.rating = rating;
+        this.ratingCount = ratingCount;
+        this.hasSeriesName = hasSeriesName;
+        this.lightAccentColor = lightAccentColor;
+        this.darkAccentColor = darkAccentColor;
+        this.neutralMidtoneColor = neutralMidtoneColor;
+        this.type = type;
+        this.type2 = type2;
+        this.language = language;
+        this.seasonNumber = seasonNumber;
+    }
+
+    private Banner(Parcel in) {
+        id = in.readInt();
+        bannerPath = in.readString();
+        thumbnailPath = in.readString();
+        vignettePath = in.readString();
+        rating = in.readFloat();
+        ratingCount = in.readInt();
+        hasSeriesName = in.readByte() != 0;
+        lightAccentColor = in.readInt();
+        darkAccentColor = in.readInt();
+        neutralMidtoneColor = in.readInt();
+        type = in.readString();
+        type2 = in.readString();
+        language = in.readString();
+        seasonNumber = in.readInt();
+    }
 
     public static Banner fromXml(XmlPullParser parser)
             throws XmlPullParserException, IOException, XmlException {
@@ -152,43 +127,6 @@ public class Banner implements Parcelable {
         return builder.build();
     }
 
-    protected Banner(int id, String bannerPath, String thumbnailPath, String vignettePath,
-                     float rating, int ratingCount, boolean hasSeriesName, int lightAccentColor,
-                     int darkAccentColor, int neutralMidtoneColor, String type,
-                     String type2, String language, int seasonNumber) {
-        this.id = id;
-        this.bannerPath = bannerPath;
-        this.thumbnailPath = thumbnailPath;
-        this.vignettePath = vignettePath;
-        this.rating = rating;
-        this.ratingCount = ratingCount;
-        this.hasSeriesName = hasSeriesName;
-        this.lightAccentColor = lightAccentColor;
-        this.darkAccentColor = darkAccentColor;
-        this.neutralMidtoneColor = neutralMidtoneColor;
-        this.type = type;
-        this.type2 = type2;
-        this.language = language;
-        this.seasonNumber = seasonNumber;
-    }
-
-    private Banner(Parcel in) {
-        id = in.readInt();
-        bannerPath = in.readString();
-        thumbnailPath = in.readString();
-        vignettePath = in.readString();
-        rating = in.readFloat();
-        ratingCount = in.readInt();
-        hasSeriesName = in.readByte() != 0;
-        lightAccentColor = in.readInt();
-        darkAccentColor = in.readInt();
-        neutralMidtoneColor = in.readInt();
-        type = in.readString();
-        type2 = in.readString();
-        language = in.readString();
-        seasonNumber = in.readInt();
-    }
-
     public static final Parcelable.Creator<Banner> CREATOR = new Parcelable.Creator<Banner>() {
         public Banner createFromParcel(Parcel in) {
             return new Banner(in);
@@ -199,11 +137,9 @@ public class Banner implements Parcelable {
         }
     };
 
-
     public int describeContents() {
         return 0;
     }
-
 
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(id);

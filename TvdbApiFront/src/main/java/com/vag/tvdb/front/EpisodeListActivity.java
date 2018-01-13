@@ -74,7 +74,7 @@ public class EpisodeListActivity extends Activity {
     private Response.ErrorListener mErrorListener = new Response.ErrorListener() {
 
         public void onErrorResponse(VolleyError volleyError) {
-            Toast.makeText(EpisodeListActivity.this, "Oh noes! Something has gone awry.",
+            Toast.makeText(EpisodeListActivity.this, "Oh noes! Something has gone away for EpisodeListActivity.",
                            Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Error fetching Episodes: ", volleyError);
         }

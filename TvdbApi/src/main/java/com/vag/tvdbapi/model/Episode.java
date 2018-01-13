@@ -15,15 +15,9 @@ import java.util.Date;
 
 /**
  * TVDB Episode metadata
- * *Warning* Objects not present in the XML will be null, numbers not present will be NOT_PRESENT
- *
- * @see <a href="http://thetvdb.com/wiki/index.php/API:Base_Episode_Record">TVDB API Base Episode Record</a>
  */
 public class Episode extends TvdbItem implements Parcelable {
 
-    /**
-     * TVDB Episode ID
-     */
     public final int id;
     public final int dvdChapter;
     public final int dvdDiskId;
@@ -39,35 +33,16 @@ public class Episode extends TvdbItem implements Parcelable {
     public final String overview;
     public final String productionCode;
     public final float rating;
-    /**
-     * Will be 0 if it is a Special
-     */
     public final int seasonNumber;
     public final String[] writers;
     public final int absoluteNumber;
-    /**
-     * Only exists if episode is a Special
-     */
     public final int airsAfterSeason;
-    /**
-     * Only exists if episode is a Special
-     */
     public final int airsBeforeEpisode;
-    /**
-     * Only exists if episode is a Special
-     */
     public final int airsBeforeSeason;
     public final String filename;
-    /**
-     * Update id for when the episode was last updated. It is not a time
-     */
     public final long lastUpdated;
     public final int seasonId;
-    /**
-     * TVDB series id
-     */
     public final int seriesId;
-
     private static final String TAG = "Episode";
     private static final boolean D = false;
     private static final String TAG_ID = "id";
@@ -97,6 +72,69 @@ public class Episode extends TvdbItem implements Parcelable {
     private static final String TAG_SERIES_ID = "seriesid";
     private static final String DELIMITER = "|";
     private static final String DATE_FORMAT = "yyyy-MM-dd";
+
+    private Episode(int id, int dvdChapter, int dvdDiskId, int dvdEpisodeNumber, int dvdSeason,
+                    String[] directors, String name, int number, Date firstAired,
+                    String[] guestStars, String imdbId, String language, String overview,
+                    String productionCode, float rating, int seasonNumber, String[] writers,
+                    int absoluteNumber, int airsAfterSeason, int airsBeforeEpisode,
+                    int airsBeforeSeason, String filename, long lastUpdated, int seasonId,
+                    int seriesId) {
+        this.id = id;
+        this.dvdChapter = dvdChapter;
+        this.dvdDiskId = dvdDiskId;
+        this.dvdEpisodeNumber = dvdEpisodeNumber;
+        this.dvdSeason = dvdSeason;
+        this.directors = directors;
+        this.name = name;
+        this.number = number;
+        this.firstAired = firstAired;
+        this.guestStars = guestStars;
+        this.imdbId = imdbId;
+        this.language = language;
+        this.overview = overview;
+        this.productionCode = productionCode;
+        this.rating = rating;
+        this.seasonNumber = seasonNumber;
+        this.writers = writers;
+        this.absoluteNumber = absoluteNumber;
+        this.airsAfterSeason = airsAfterSeason;
+        this.airsBeforeEpisode = airsBeforeEpisode;
+        this.airsBeforeSeason = airsBeforeSeason;
+        this.filename = filename;
+        this.lastUpdated = lastUpdated;
+        this.seasonId = seasonId;
+        this.seriesId = seriesId;
+    }
+
+    public Episode(Parcel in) {
+        id = in.readInt();
+        dvdChapter = in.readInt();
+        dvdDiskId = in.readInt();
+        dvdEpisodeNumber = in.readInt();
+        dvdSeason = in.readInt();
+        directors = in.createStringArray();
+        name = in.readString();
+        number = in.readInt();
+        long tmpFirstAired = in.readLong();
+        firstAired = tmpFirstAired != -1L ? new Date(tmpFirstAired) : null;
+        guestStars = in.createStringArray();
+        imdbId = in.readString();
+        language = in.readString();
+        overview = in.readString();
+        productionCode = in.readString();
+        rating = in.readFloat();
+        seasonNumber = in.readInt();
+        writers = in.createStringArray();
+        absoluteNumber = in.readInt();
+        airsAfterSeason = in.readInt();
+        airsBeforeEpisode = in.readInt();
+        airsBeforeSeason = in.readInt();
+        filename = in.readString();
+        lastUpdated = in.readLong();
+        seasonId = in.readInt();
+        seriesId = in.readInt();
+    }
 
     public static Episode fromXml(XmlPullParser parser) throws XmlPullParserException, IOException,
                                                                XmlException {
@@ -163,95 +201,6 @@ public class Episode extends TvdbItem implements Parcelable {
         return builder.build();
     }
 
-    private Episode(int id, int dvdChapter, int dvdDiskId, int dvdEpisodeNumber, int dvdSeason,
-                    String[] directors, String name, int number, Date firstAired,
-                    String[] guestStars, String imdbId, String language, String overview,
-                    String productionCode, float rating, int seasonNumber, String[] writers,
-                    int absoluteNumber, int airsAfterSeason, int airsBeforeEpisode,
-                    int airsBeforeSeason, String filename, long lastUpdated, int seasonId,
-                    int seriesId) {
-        this.id = id;
-        this.dvdChapter = dvdChapter;
-        this.dvdDiskId = dvdDiskId;
-        this.dvdEpisodeNumber = dvdEpisodeNumber;
-        this.dvdSeason = dvdSeason;
-        this.directors = directors;
-        this.name = name;
-        this.number = number;
-        this.firstAired = firstAired;
-        this.guestStars = guestStars;
-        this.imdbId = imdbId;
-        this.language = language;
-        this.overview = overview;
-        this.productionCode = productionCode;
-        this.rating = rating;
-        this.seasonNumber = seasonNumber;
-        this.writers = writers;
-        this.absoluteNumber = absoluteNumber;
-        this.airsAfterSeason = airsAfterSeason;
-        this.airsBeforeEpisode = airsBeforeEpisode;
-        this.airsBeforeSeason = airsBeforeSeason;
-        this.filename = filename;
-        this.lastUpdated = lastUpdated;
-        this.seasonId = seasonId;
-        this.seriesId = seriesId;
-    }
-
-    public Episode(Parcel in) {
-        id = in.readInt();
-        dvdChapter = in.readInt();
-        dvdDiskId = in.readInt();
-        dvdEpisodeNumber = in.readInt();
-        dvdSeason = in.readInt();
-        directors = in.createStringArray();
-        name = in.readString();
-        number = in.readInt();
-        long tmpFirstAired = in.readLong();
-        firstAired = tmpFirstAired != -1L ? new Date(tmpFirstAired) : null;
-        guestStars = in.createStringArray();
-        imdbId = in.readString();
-        language = in.readString();
-        overview = in.readString();
-        productionCode = in.readString();
-        rating = in.readFloat();
-        seasonNumber = in.readInt();
-        writers = in.createStringArray();
-        absoluteNumber = in.readInt();
-        airsAfterSeason = in.readInt();
-        airsBeforeEpisode = in.readInt();
-        airsBeforeSeason = in.readInt();
-        filename = in.readString();
-        lastUpdated = in.readLong();
-        seasonId = in.readInt();
-        seriesId = in.readInt();
-    }
-
-
-    public String getImageUrl() {
-        return filename;
-    }
-
-
-    public String getTitleText() {
-        return name;
-    }
-
-
-    public String getDescText() {
-        return overview;
-    }
-
-    /**
-     * All episodes are special in my book
-     *
-     * @return {@link Boolean} indicating whether the Episode is a special
-     */
-    @SuppressWarnings("unused")
-    public boolean isSpecial() {
-        return seasonNumber == 0;
-    }
-
-    @SuppressWarnings("unused")
     public static final Parcelable.Creator<Episode> CREATOR = new Parcelable.Creator<Episode>() {
 
         public Episode createFromParcel(Parcel in) {
@@ -264,11 +213,25 @@ public class Episode extends TvdbItem implements Parcelable {
         }
     };
 
+    public String getImageUrl() {
+        return filename;
+    }
+
+    public String getTitleText() {
+        return name;
+    }
+
+    public String getDescText() {
+        return overview;
+    }
 
     public int describeContents() {
         return 0;
     }
 
+    public boolean isSpecial() {
+        return seasonNumber == 0;
+    }
 
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(id);

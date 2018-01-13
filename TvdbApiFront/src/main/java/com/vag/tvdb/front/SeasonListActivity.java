@@ -87,7 +87,7 @@ public class SeasonListActivity extends Activity {
     private Response.ErrorListener mErrorListener = new Response.ErrorListener() {
 
         public void onErrorResponse(VolleyError volleyError) {
-            Toast.makeText(SeasonListActivity.this, "Oh noes! Something has gone awry.",
+            Toast.makeText(SeasonListActivity.this, "Oh noes! Something has gone away for SeasonListActivity.",
                            Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Error fetching seasons: ", volleyError);
         }

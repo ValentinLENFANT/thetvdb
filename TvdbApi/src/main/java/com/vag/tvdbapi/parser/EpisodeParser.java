@@ -26,11 +26,6 @@ public class EpisodeParser implements XmlObjectListParser<Episode>, XmlObjectPar
         mSeasonNumber = ALL_SEASONS;
     }
 
-    /**
-     * Only return Episodes that are a part of the given season number
-     *
-     * @param seasonNumber
-     */
     public EpisodeParser(String language, int seasonNumber) {
         allEpisodes = language + ".xml";
         mSeasonNumber = seasonNumber;

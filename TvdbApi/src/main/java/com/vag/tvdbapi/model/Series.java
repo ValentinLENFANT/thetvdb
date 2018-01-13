@@ -18,29 +18,13 @@ import java.util.Date;
 
 /**
  * TVDB Series metadata
- * *Warning* Objects not present in the XML will be null, numbers not present will be NOT_PRESENT
- *
- * @see <a href="http://thetvdb.com/wiki/index.php/API:Base_Series_Record.xml">TVDB API Base Series Record</a>
  */
 public class Series extends TvdbItem implements Parcelable {
 
-    /**
-     * TVDB Series id
-     */
     public final int id;
     public final String[] actors;
-    /**
-     * Can be "Monday" through "Sunday"
-     */
     public final String airsDayOfWeek;
-    /**
-     * I don't know what timezone TVDB uses but it will look something like this: "8:00 PM"
-     */
     public final String airsTime;
-    /**
-     * Your standard content rating string
-     * Example: "TV-PG"
-     */
     public final String contentRating;
     public final Date firstAired;
     public final String[] genres;
@@ -52,10 +36,6 @@ public class Series extends TvdbItem implements Parcelable {
     public final float rating;
     public final int ratingCount;
     public final int runtime;
-    /**
-     * Series id used on TV.com
-     * <b>NOT THE TVDB SERIES ID</b>
-     */
     public final int tvComId;
     public final String name;
     public final String status;
@@ -69,11 +49,6 @@ public class Series extends TvdbItem implements Parcelable {
 
     private static final String TAG = "Series";
     private static final boolean D = false;
-
-    /**
-     * Infuriatingly the api specs define the TVDB Series ID as 'id' in some places and 'seriesid'
-     * in others.
-     */
     private static final String TAG_ID = "id";
     private static final String TAG_ID2 = "seriesid";
     private static final String TAG_ACTORS = "Actors";
@@ -83,7 +58,6 @@ public class Series extends TvdbItem implements Parcelable {
     private static final String TAG_FIRST_AIRED = "FirstAired";
     private static final String TAG_GENRES = "Genre";
     private static final String TAG_IMDB_ID = "IMDB_ID";
-    /** Language is also defined differently in different places*/
     private static final String TAG_LANGUAGE = "Language";
     private static final String TAG_LANGUAGE2 = "language";
     private static final String TAG_NETWORK = "Network";
@@ -92,7 +66,6 @@ public class Series extends TvdbItem implements Parcelable {
     private static final String TAG_RATING = "Rating";
     private static final String TAG_RATING_COUNT = "RatingCount";
     private static final String TAG_RUNTIME = "Runtime";
-    /** What's even more ridiculous is there's a 'SeriesID' tag which is actually the TV.com id*/
     private static final String TAG_TV_COM_ID = "SeriesID";
     private static final String TAG_NAME = "SeriesName";
     private static final String TAG_STATUS = "Status";
@@ -105,6 +78,68 @@ public class Series extends TvdbItem implements Parcelable {
     private static final String TAG_ZAP2IT_ID = "zap2it_id";
     private static final String DELIMITER = "|";
     private static final String DATE_FORMAT = "yyyy-MM-dd";
+
+    private Series(int id, String[] actors, String airsDayOfWeek, String airsTime,
+                   String contentRating, Date firstAired, String[] genres, String imdbId,
+                   String language, String network, int networkId, String overview, float rating,
+                   int ratingCount, int runtime, int tvComId, String name, String status,
+                   String added, String addedBy, String banner, String fanart, long lastUpdated,
+                   String poster, String zap2itId) {
+        this.id = id;
+        this.actors = actors;
+        this.airsDayOfWeek = airsDayOfWeek;
+        this.airsTime = airsTime;
+        this.contentRating = contentRating;
+        this.firstAired = firstAired;
+        this.genres = genres;
+        this.imdbId = imdbId;
+        this.language = language;
+        this.network = network;
+        this.networkId = networkId;
+        this.overview = overview;
+        this.rating = rating;
+        this.ratingCount = ratingCount;
+        this.runtime = runtime;
+        this.tvComId = tvComId;
+        this.name = name;
+        this.status = status;
+        this.added = added;
+        this.addedBy = addedBy;
+        this.banner = banner;
+        this.fanart = fanart;
+        this.lastUpdated = lastUpdated;
+        this.poster = poster;
+        this.zap2itId = zap2itId;
+    }
+
+    protected Series(Parcel in) {
+        id = in.readInt();
+        actors = in.createStringArray();
+        airsDayOfWeek = in.readString();
+        airsTime = in.readString();
+        contentRating = in.readString();
+        long tmpFirstAired = in.readLong();
+        firstAired = tmpFirstAired != NOT_PRESENT ? new Date(tmpFirstAired) : null;
+        genres = in.createStringArray();
+        imdbId = in.readString();
+        language = in.readString();
+        network = in.readString();
+        networkId = in.readInt();
+        overview = in.readString();
+        rating = in.readFloat();
+        ratingCount = in.readInt();
+        runtime = in.readInt();
+        tvComId = in.readInt();
+        name = in.readString();
+        status = in.readString();
+        added = in.readString();
+        addedBy = in.readString();
+        banner = in.readString();
+        fanart = in.readString();
+        lastUpdated = in.readLong();
+        poster = in.readString();
+        zap2itId = in.readString();
+    }
 
     public static Series fromXml(XmlPullParser parser)
             throws XmlPullParserException, IOException, XmlException {
@@ -175,84 +210,18 @@ public class Series extends TvdbItem implements Parcelable {
         return builder.build();
     }
 
-    private Series(int id, String[] actors, String airsDayOfWeek, String airsTime,
-                   String contentRating, Date firstAired, String[] genres, String imdbId,
-                   String language, String network, int networkId, String overview, float rating,
-                   int ratingCount, int runtime, int tvComId, String name, String status,
-                   String added, String addedBy, String banner, String fanart, long lastUpdated,
-                   String poster, String zap2itId) {
-        this.id = id;
-        this.actors = actors;
-        this.airsDayOfWeek = airsDayOfWeek;
-        this.airsTime = airsTime;
-        this.contentRating = contentRating;
-        this.firstAired = firstAired;
-        this.genres = genres;
-        this.imdbId = imdbId;
-        this.language = language;
-        this.network = network;
-        this.networkId = networkId;
-        this.overview = overview;
-        this.rating = rating;
-        this.ratingCount = ratingCount;
-        this.runtime = runtime;
-        this.tvComId = tvComId;
-        this.name = name;
-        this.status = status;
-        this.added = added;
-        this.addedBy = addedBy;
-        this.banner = banner;
-        this.fanart = fanart;
-        this.lastUpdated = lastUpdated;
-        this.poster = poster;
-        this.zap2itId = zap2itId;
-    }
-
-    protected Series(Parcel in) {
-        id = in.readInt();
-        actors = in.createStringArray();
-        airsDayOfWeek = in.readString();
-        airsTime = in.readString();
-        contentRating = in.readString();
-        long tmpFirstAired = in.readLong();
-        firstAired = tmpFirstAired != NOT_PRESENT ? new Date(tmpFirstAired) : null;
-        genres = in.createStringArray();
-        imdbId = in.readString();
-        language = in.readString();
-        network = in.readString();
-        networkId = in.readInt();
-        overview = in.readString();
-        rating = in.readFloat();
-        ratingCount = in.readInt();
-        runtime = in.readInt();
-        tvComId = in.readInt();
-        name = in.readString();
-        status = in.readString();
-        added = in.readString();
-        addedBy = in.readString();
-        banner = in.readString();
-        fanart = in.readString();
-        lastUpdated = in.readLong();
-        poster = in.readString();
-        zap2itId = in.readString();
-    }
-
-
     public String getImageUrl() {
         return banner;
     }
-
 
     public String getTitleText() {
         return name;
     }
 
-
     public String getDescText() {
         return overview;
     }
 
-    @SuppressWarnings("unused")
     public static final Parcelable.Creator<Series> CREATOR = new Parcelable.Creator<Series>() {
         public Series createFromParcel(Parcel in) {
             return new Series(in);

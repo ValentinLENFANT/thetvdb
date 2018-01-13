@@ -17,7 +17,6 @@ import java.util.Map;
 
 public class SeriesParser implements XmlObjectListParser<Series>, XmlObjectParser<Series> {
 
-
     public Collection<Series> parseListFromXmlString(String xml) throws XmlException {
         try {
             return readSeriesList(XmlUtil.getXmlPullParser(xml));
@@ -28,12 +27,10 @@ public class SeriesParser implements XmlObjectListParser<Series>, XmlObjectParse
         }
     }
 
-
     public Collection<Series> parseListFromXmlStrings(Map<String, String> xmlStrings)
             throws XmlException {
         throw new IllegalStateException("Can't parse series list from a set of xmlStrings");
     }
-
 
     public Series parseXmlString(String xmlString) throws XmlException {
         try {

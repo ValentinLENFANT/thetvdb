@@ -24,11 +24,6 @@ public class BannerListParser implements XmlObjectListParser<Banner> {
         mSeasonNumber = ALL_SEASONS;
     }
 
-    /**
-     * Only return Banners that are for the seasonNumber
-     *
-     * @param seasonNumber season number to return banners for
-     */
     public BannerListParser(int seasonNumber) {
         mSeasonNumber = seasonNumber;
     }

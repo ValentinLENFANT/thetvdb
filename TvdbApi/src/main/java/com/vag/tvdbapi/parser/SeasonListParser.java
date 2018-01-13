@@ -21,14 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-/**
- * This class is kind've a clusterfuck because there's not really any season xml data, so this class
- * constructs that data by looking at all of the episodes, and then fills in the banners by looking
- * at Banners.xml
- */
 public class SeasonListParser implements XmlObjectListParser<Season> {
 
-    //TODO: Pay attention to show order
     private final TvdbApi.SHOW_ORDER mShowOrder;
     private final String allEpisodes;
 
@@ -36,13 +30,6 @@ public class SeasonListParser implements XmlObjectListParser<Season> {
         mShowOrder = TvdbApi.SHOW_ORDER.DEFAULT;
         allEpisodes = language + ".xml";
     }
-
-    @SuppressWarnings("unused")
-    public SeasonListParser(String language, TvdbApi.SHOW_ORDER showOrder) {
-        mShowOrder = showOrder;
-        allEpisodes = language + ".xml";
-    }
-
 
     public Collection<Season> parseListFromXmlString(String xml) throws XmlException {
         try {
@@ -53,7 +40,6 @@ public class SeasonListParser implements XmlObjectListParser<Season> {
             throw new XmlException("Error parsing XML", e);
         }
     }
-
 
     public Collection<Season> parseListFromXmlStrings(Map<String, String> xmlStrings)
             throws XmlException {
@@ -129,11 +115,6 @@ public class SeasonListParser implements XmlObjectListParser<Season> {
         return getBuiltSeasons(sortedSeasons);
     }
 
-    /**
-     * Advance the iterator to give season
-     * @Return The first {@link Season.Builder} that has the given seasonNumber or null if none
-     * exists
-     */
     private Season.Builder advanceToSeason(Iterator<Season.Builder> seasons, int seasonNumber) {
         while (seasons.hasNext()) {
             Season.Builder season = seasons.next();
