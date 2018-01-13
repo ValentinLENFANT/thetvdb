@@ -47,8 +47,38 @@ public class TvdbApi {
         mLanguage = language;
         mRequestQueue = requestQueue;
     }
+	
+	/**
+     * Get all of the {@link Season}s for a given {@link Series}
+     *
+     * @param series        {@link Series} to get the seasons for
+     * @param listener      {@link Response.Listener} for receiving the result
+     * @param errorListener {@link Response.ErrorListener} for receiving any errors
+     */
+    public void getSeasons(Series series, Response.Listener<Collection<Season>> listener,
+                           Response.ErrorListener errorListener) {
+        getSeasons(series.id, listener, errorListener);
+    }
 
     /**
+     * Get all of the {@link Season}s for a given TVDB Series ID
+     *
+     * @param seriesId      TVDB Series ID
+     * @param listener      {@link Response.Listener} for receiving the result
+     * @param errorListener {@link Response.ErrorListener} for receiving any errors
+     */
+    public void getSeasons(int seriesId, Response.Listener<Collection<Season>> listener,
+                           Response.ErrorListener errorListener) {
+        String requestUrl = getSeriesRequestUrl(seriesId);
+
+        ZippedXmlObjectListRequest<Season, SeasonListParser> seasonRequest =
+                new ZippedXmlObjectListRequest<Season, SeasonListParser>(
+                        new SeasonListParser(mLanguage), requestUrl, listener, errorListener);
+
+        mRequestQueue.add(seasonRequest);
+    }
+	
+	/**
      * Get all of the {@link Episode}s for a given {@link Series}
      *
      * @param series        {@link Series} to get the episodes for

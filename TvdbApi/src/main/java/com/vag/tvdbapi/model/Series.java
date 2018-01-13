@@ -16,15 +16,31 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+/**
+ * TVDB Series metadata
+ * *Warning* Objects not present in the XML will be null, numbers not present will be NOT_PRESENT
+ *
+ * @see <a href="http://thetvdb.com/wiki/index.php/API:Base_Series_Record.xml">TVDB API Base Series Record</a>
+ */
 public class Series extends TvdbItem implements Parcelable {
-	
+
+    /**
+     * TVDB Series id
+     */
     public final int id;
     public final String[] actors;
     /**
      * Can be "Monday" through "Sunday"
      */
     public final String airsDayOfWeek;
+    /**
+     * I don't know what timezone TVDB uses but it will look something like this: "8:00 PM"
+     */
     public final String airsTime;
+    /**
+     * Your standard content rating string
+     * Example: "TV-PG"
+     */
     public final String contentRating;
     public final Date firstAired;
     public final String[] genres;
@@ -36,6 +52,10 @@ public class Series extends TvdbItem implements Parcelable {
     public final float rating;
     public final int ratingCount;
     public final int runtime;
+    /**
+     * Series id used on TV.com
+     * <b>NOT THE TVDB SERIES ID</b>
+     */
     public final int tvComId;
     public final String name;
     public final String status;
@@ -46,8 +66,14 @@ public class Series extends TvdbItem implements Parcelable {
     public final long lastUpdated;
     public final String poster;
     public final String zap2itId;
+
     private static final String TAG = "Series";
     private static final boolean D = false;
+
+    /**
+     * Infuriatingly the api specs define the TVDB Series ID as 'id' in some places and 'seriesid'
+     * in others.
+     */
     private static final String TAG_ID = "id";
     private static final String TAG_ID2 = "seriesid";
     private static final String TAG_ACTORS = "Actors";
@@ -57,6 +83,7 @@ public class Series extends TvdbItem implements Parcelable {
     private static final String TAG_FIRST_AIRED = "FirstAired";
     private static final String TAG_GENRES = "Genre";
     private static final String TAG_IMDB_ID = "IMDB_ID";
+    /** Language is also defined differently in different places*/
     private static final String TAG_LANGUAGE = "Language";
     private static final String TAG_LANGUAGE2 = "language";
     private static final String TAG_NETWORK = "Network";
@@ -65,6 +92,7 @@ public class Series extends TvdbItem implements Parcelable {
     private static final String TAG_RATING = "Rating";
     private static final String TAG_RATING_COUNT = "RatingCount";
     private static final String TAG_RUNTIME = "Runtime";
+    /** What's even more ridiculous is there's a 'SeriesID' tag which is actually the TV.com id*/
     private static final String TAG_TV_COM_ID = "SeriesID";
     private static final String TAG_NAME = "SeriesName";
     private static final String TAG_STATUS = "Status";
