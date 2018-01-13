@@ -229,6 +229,82 @@ public class TvdbApi {
     }
 	
 	/**
+     * Get {@link Actor}s for a {@link Series}
+     *
+     * @param series        The {@link Series} to download {@link Actor}s for
+     * @param listener      {@link Response.Listener} for receiving the result
+     * @param errorListener {@link Response.ErrorListener} for receiving any errors
+     */
+    public void getActors(Series series, Response.Listener<Collection<Actor>> listener,
+                          Response.ErrorListener errorListener) {
+        getActors(series.id, listener, errorListener);
+    }
+
+    /**
+     * Get {@link Actor}s for a TVDB Series ID
+     *
+     * @param seriesId      TVDB Series ID
+     * @param listener      {@link Response.Listener} for receiving the result
+     * @param errorListener {@link Response.ErrorListener} for receiving any errors
+     */
+    public void getActors(int seriesId, Response.Listener<Collection<Actor>> listener,
+                          Response.ErrorListener errorListener) {
+        String requestUrl = BASE_URL + mApiKey + "/series/" + seriesId + "/actors.xml";
+
+        XmlObjectListRequest<Actor, ActorListParser> actorRequest = new XmlObjectListRequest
+                <Actor, ActorListParser>(new ActorListParser(), requestUrl, listener,
+                                         errorListener);
+
+        mRequestQueue.add(actorRequest);
+    }
+	
+	/**
+     * Get all {@link Banner}s for a {@link Series}
+     * This does not actually download the banners, it only loads the url metadata
+     *
+     * @param series        The {@link Series} to download banners for
+     * @param listener      {@link Response.Listener} for receiving the result
+     * @param errorListener {@link Response.ErrorListener} for receiving any errors
+     */
+    public void getBanners(Series series, Response.Listener<Collection<Banner>> listener,
+                           Response.ErrorListener errorListener) {
+        getBanners(series.id, listener, errorListener);
+    }
+
+    /**
+     * Get all {@link Banner}s for a TVDB series ID
+     * This does not actually download the banners, it only loads the url metadata
+     *
+     * @param seriesId      TVDB Series ID
+     * @param listener      {@link Response.Listener} for receiving the result
+     * @param errorListener {@link Response.ErrorListener} for receiving any errors
+     */
+    public void getBanners(int seriesId, Response.Listener<Collection<Banner>> listener,
+                           Response.ErrorListener errorListener) {
+        getBanners(seriesId, BannerListParser.ALL_SEASONS, listener, errorListener);
+    }
+
+    /**
+     * Get {@link Banner}s for a season
+     *
+     * @param seriesId      TVDB Series ID
+     * @param seasonNumber  The season number
+     * @param listener      {@link Response.Listener} for receiving the result
+     * @param errorListener {@link Response.ErrorListener} for receiving any errors
+     */
+    public void getBanners(int seriesId, int seasonNumber,
+                           Response.Listener<Collection<Banner>> listener,
+                           Response.ErrorListener errorListener) {
+        String requstUrl = getSeriesRequestUrl(seriesId);
+
+        ZippedXmlObjectListRequest<Banner, BannerListParser> bannerRequest =
+                new ZippedXmlObjectListRequest<Banner, BannerListParser>(
+                        new BannerListParser(seasonNumber), requstUrl, listener, errorListener);
+
+        mRequestQueue.add(bannerRequest);
+    }
+	
+	/**
      * Search the TVDB for a {@link Series} based on the series name
      *
      * @param seriesName    The series to search for
